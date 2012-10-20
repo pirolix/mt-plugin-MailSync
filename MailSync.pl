@@ -1,12 +1,14 @@
 package MT::Plugin::OMV::MailSync;
+# $Id$
 
 use strict;
 use MT::Entry;
 use MT::Mail;
 
-use vars qw( $MYNAME $VERSION );
-$MYNAME = 'MailSync';
-$VERSION = '0.10';
+use vars qw( $VENDOR $MYNAME $VERSION );
+($VENDOR, $MYNAME) = (split /::/, __PACKAGE__)[-2, -1];
+(my $revision = '$Rev$') =~ s/\D//g;
+$VERSION = '0.10'. ($revision ? ".$revision" : '');
 
 use base qw( MT::Plugin );
 my $plugin = __PACKAGE__->new({
@@ -64,7 +66,8 @@ sub _entry_post_save {
             );
             $pdata->{$_} = MT::Mail->send (\%head, $body)
                 or die MT::Mail->errstr;
-        }
+
+        }
     }
     save_plugindata (key_name ($entry->id), $pdata);
     1;
